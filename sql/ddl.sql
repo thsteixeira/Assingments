@@ -62,6 +62,7 @@ CREATE TABLE REVIEWS (
 CREATE TABLE SUBMISSIONS (
     submission_id INT PRIMARY KEY,
         student_id INT REFERENCES STUDENTS(student_id),
+        assessment_id INT REFERENCES ASSESSMENTS(assessment_id),
         submission_date DATE
         );
 
@@ -69,7 +70,6 @@ CREATE TABLE ASSESSMENTS (
     assessment_id INT PRIMARY KEY,
         module_id INT REFERENCES MODULES(module_id),
         student_id INT REFERENCES STUDENTS(student_id),
-        submission_id INT REFERENCES SUBMISSIONS(submission_id),
         grade DECIMAL(10, 2),
         expected_grade DECIMAL(10, 2),
         deadline_date DATE
