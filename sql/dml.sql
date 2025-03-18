@@ -30,6 +30,8 @@ insert into courses (instructor_id,title,category) values
   (3,'Arts II','Arts'),
   (4,'programming I','Tech'),
   (1,'Data modeling','Tech');
+  (1,'No review 1','Tech'),
+  (2,'No review 2','Bussiness');
 
 INSERT INTO modules (course_id, title) VALUES
 (1, 'Introduction to Programming'),
@@ -77,3 +79,15 @@ INSERT INTO enrollments(student_id, course_id, enrollment_date, last_login_date,
   ('8', '4', '2024-08-01', '2025-01-06', false),
   ('9', '1', '2024-01-06', '2025-03-10', true),
   ('10', '5', '2024-08-01', '2025-03-10', true);
+
+INSERT INTO subscriptions(student_id, type_of_subscription, start_date, end_date, expire_date) VALUES
+  ('1', 'Free', '2024-04-10', '2024-07-30', Null),
+  ('2', 'Free', '2024-04-10', '2024-07-30', Null),
+  ('3', 'Free', '2024-04-10', '2024-07-30', Null),
+  ('4', 'Free', '2024-04-10', '2025-07-30', Null),
+  ('5', 'Free', '2024-04-10', '2025-07-30', Null),
+  ('6', 'Free', '2024-04-10', '2025-07-30', Null),
+  ('7', 'Premium', '2024-08-06', '2025-07-30', Null),
+  ('8', 'Premium', '2024-08-06', '2025-07-30', Null),
+  ('9', 'Premium', '2024-08-06', '2025-07-30', Null),
+  ('10', 'Premium', '2024-08-06', '2026-07-30', Null);
