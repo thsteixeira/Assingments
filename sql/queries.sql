@@ -14,10 +14,46 @@
 -- 9. Which instructors have the most students enrolled across all their courses?
 -- 10. Which students have completed all modules in a course?
 -- 11. List students who are at least 75% complete with their enrolled courses.
+SELECT s.student_id, s.name, c.course_id, c.title,
+       COUNT(a.assessment_id) * 100.0 / (SELECT COUNT(*) FROM MODULES m WHERE m.course_id = c.course_id) AS completion_percentage
+FROM STUDENTS s
+JOIN ENROLLMENTS e ON s.student_id = e.student_id
+JOIN COURSES c ON e.course_id = c.course_id
+JOIN MODULES m ON c.course_id = m.course_id
+LEFT JOIN ASSESSMENTS a ON m.module_id = a.module_id AND a.student_id = s.student_id
+GROUP BY s.student_id, s.name, c.course_id, c.title
+HAVING COUNT(a.assessment_id) * 100.0 / (SELECT COUNT(*) FROM MODULES m WHERE m.course_id = c.course_id) >= 75;
+
 -- 12. How many students dropped out of courses before completing any module?
+SELECT COUNT(DISTINCT e.student_id) AS dropped_out_students
+FROM ENROLLMENTS e
+LEFT JOIN ASSESSMENTS a ON e.student_id = a.student_id
+WHERE a.assessment_id IS NULL;
+
+
 -- 13. What is the average score for each assessment in the 'Introduction to Data -- Science' course?
+SELECT a.assessment_id, m.title AS module_title, AVG(a.grade) AS average_score
+FROM ASSESSMENTS a
+JOIN MODULES m ON a.module_id = m.module_id
+JOIN COURSES c ON m.course_id = c.course_id
+WHERE c.title = 'Introduction to Data Science'
+GROUP BY a.assessment_id, m.title;
+
 -- 14. Identify the top 10 assessments with the lowest average scores.
+SELECT a.assessment_id, m.title AS module_title, AVG(a.grade) AS average_score
+FROM ASSESSMENTS a
+JOIN MODULES m ON a.module_id = m.module_id
+GROUP BY a.assessment_id, m.title
+ORDER BY average_score ASC
+LIMIT 10;
+
 -- 15. How many students submitted assessments after the deadline in the last month?
+SELECT COUNT(DISTINCT s.student_id) AS late_students
+FROM SUBMISSIONS s
+JOIN ASSESSMENTS a ON s.assessment_id = a.assessment_id
+WHERE s.submission_date > a.deadline_date
+AND s.submission_date >= CURRENT_DATE - INTERVAL '1 month';
+
 -- 16. How many students have active Free vs. Premium subscriptions?
 SELECT
     COUNT(*) AS total_students,
