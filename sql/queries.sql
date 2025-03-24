@@ -9,10 +9,43 @@
 -- 4. What is the total revenue from Premium subscriptions in the last quarter? (last 3 -- months)
 -- 5. What percentage of total revenue comes from subscription payments versus one-time -- course purchases?
 -- 6. Identify the students contributing the highest revenue in the last year.
+SELECT s.student_id, s.name, SUM(p.price) AS revenue
+FROM students s
+JOIN payment_records p ON s.student_id = p.student_id
+GROUP BY s.student_id, s.name
+ORDER BY revenue DESC
+LIMIT 10;
+
 -- 7. Which instructors have the highest-rated courses, based on average review scores?
+SELECT i.name, AVG(r.rating) AS rated
+FROM instructors i
+JOIN courses c ON i.instructor_id = c.instructor_id
+JOIN reviews r ON c.course_id = r.course_id
+GROUP BY i.name
+ORDER BY rated DESC;
+
 -- 8. What is the average number of courses taught per instructor in the Programming -- category?
+SELECT AVG(courses) AS average_courses
+FROM (
+    SELECT COUNT(c.title) AS courses
+    FROM courses c
+    JOIN instructors i ON c.instructor_id = i.instructor_id
+    WHERE c.category LIKE 'Tech'
+    GROUP BY i.name
+);
+
 -- 9. Which instructors have the most students enrolled across all their courses?
+SELECT i.name, COUNT(s.student_id) students_enrollments
+FROM instructors i
+JOIN courses c ON i.instructor_id = c.instructor_id
+JOIN enrollments e ON c.course_id = e.course_id
+JOIN students s ON e.student_id = s.student_id
+GROUP BY i.name
+ORDER BY students_enrollments DESC
+
 -- 10. Which students have completed all modules in a course?
+
+
 -- 11. List students who are at least 75% complete with their enrolled courses.
 SELECT s.student_id, s.name, c.course_id, c.title,
        COUNT(a.assessment_id) * 100.0 / (SELECT COUNT(*) FROM MODULES m WHERE m.course_id = c.course_id) AS completion_percentage
@@ -94,7 +127,13 @@ GROUP BY p.methods
 ORDER BY total_payments DESC;
 
 
--- 21. List students who failed any assessment
+-- 21. List students who failed any assessment.
+SELECT s.name
+FROM students s
+JOIN assessments a ON s.student_id = a.student_id
+WHERE a.grade < a.expected_grade
+GROUP BY s.name
+
 -- 22. Courses with the most modules?
 -- 23. Which courses have the highest number of reviews in the last quarter?
 -- 24. What is the average review rating for each course category?
