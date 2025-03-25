@@ -44,6 +44,14 @@ GROUP BY i.name
 ORDER BY students_enrollments DESC
 
 -- 10. Which students have completed all modules in a course?
+SELECT s.student_id, s.name, c.course_id, c.title
+FROM STUDENTS s
+JOIN ENROLLMENTS e ON s.student_id = e.student_id
+JOIN COURSES c ON e.course_id = c.course_id
+JOIN MODULES m ON c.course_id = m.course_id
+LEFT JOIN ASSESSMENTS a ON m.module_id = a.module_id AND a.student_id = s.student_id
+GROUP BY s.student_id, s.name, c.course_id, c.title
+HAVING COUNT(a.assessment_id) = (SELECT COUNT(*) FROM MODULES m WHERE m.course_id = c.course_id);
 
 
 -- 11. List students who are at least 75% complete with their enrolled courses.
